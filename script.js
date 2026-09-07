@@ -12,19 +12,20 @@ const height = canvas.height = window.innerHeight;
             speed: 5    // Pixels moved per event
         };
 
-        // Function to draw the current frame
+        // Function to draw frame
         function draw() {
-            // 1. Clear the entire canvas before redrawing
+            // 1. Clear the entire canvas before drawing
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 2. Set the color and draw the square
+            // 2. square
             ctx.fillStyle = 'royalblue';
             ctx.fillRect(square.x, square.y, square.size, square.size);
         }
 
          // Listen for keyboard input
         window.addEventListener('keydown', function(event) {
-            // Check which key was pressed using event.key
+            // Check which key was pressed use event.key
             switch(event.key) {
                 case 'ArrowUp':
                     square.y -= square.speed;
@@ -42,30 +43,29 @@ const height = canvas.height = window.innerHeight;
                     return; // Quit function if it's not an arrow key
             }
 
-             // Prevent the browser window from scrolling when pressing arrow keys
+             // Prevent browser from scrolling when pressing arrow keys
             event.preventDefault();
 
-            // Redraw the square in its new position
+            // Redraw the square in new position
             draw();
         });
 
-        // Initial draw call to show the square when the page loads
         draw();
 
         let square2 = {
-            x: 300,     // Initial X position (centered)
-            y: 300,     // Initial Y position (centered)
-            size: 50,   // Width and height of the square
+            x: 300,     // Initial X (centered)
+            y: 300,     // Initial Y (centered)
+            size: 50,   // Width and height of square
             speed: 5    // Pixels moved per event
         };
 
-        // Function to draw the second square
+        //draw second square
         function drawSquare2() {
             ctx.fillStyle = 'red';
             ctx.fillRect(square2.x, square2.y, square2.size, square2.size);
         }
 
-        // Listen for keyboard input for the second square
+        // Listen keyboard input 2nd square
         window.addEventListener('keydown', function(event) {
             switch(event.key) {
                 case 'w':
@@ -88,7 +88,6 @@ const height = canvas.height = window.innerHeight;
             drawSquare2();
         });
 
-        // Initial draw call to show both squares when the page loads
         draw();
         drawSquare2();
         

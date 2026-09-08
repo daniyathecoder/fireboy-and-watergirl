@@ -9,16 +9,28 @@ const height = canvas.height = window.innerHeight;
             x: 175,     // Initial X position (centered)
             y: 175,     // Initial Y position (centered)
             size: 50,   // Width and height of the square
-            speed: 5    // Pixels moved per event
+            speed: 5,    // Pixels moved per event
+            velocity: 0, // Current vertical velocity
+            jumpPower: -12,
+            gravity: 0.5, // Gravity acceleration
         };
         // fireboy
          let square2 = {
             x: 300,     // Initial X (centered)
             y: 300,     // Initial Y (centered)
             size: 50,   // Width and height of square
-            speed: 5    // Pixels moved per event
+            speed: 5,    // Pixels moved per event
+            velocity: 0, // Current vertical velocity
+            jumpPower: -12,
+            gravity: 0.5, // Gravity acceleration
         };
-
+// platform
+let platform = {
+    x: 100,
+    y: 500,
+    width: 500,
+    height: 30,
+}
         // Function to draw frame
         function draw() {
             // 1. Clear the entire canvas before drawing
@@ -32,7 +44,50 @@ const height = canvas.height = window.innerHeight;
              //draw fireboy
             ctx.fillStyle = 'red';
             ctx.fillRect(square2.x, square2.y, square2.size, square2.size);
+
+            //draw platform
+            ctx.fillStyle = 'gray';
+            ctx.fillRect(platform.x,
+                platform.y,
+                platform.width,
+                platform.height
+            );
         }
+        function update() {
+            //gravity for both
+
+            // watergirl gravity
+            square.velocity += square.gravity;
+            square.y += square.velocity;
+             // fireboy gravity
+             square2.velocity += square2.gravity;
+            square2.y += square2.velocity;
+                     
+            //floor watergirl
+            if (square.y + square.size >= canvas.height) {
+                square.y = canvas.height - square.size;
+                square.velocity = 0;
+            }
+
+            //floor fireboy
+            if (square2.y + square2.size >= canvas.height) {
+                square2.y = canvas.height - square2.size;
+                square2.velocity = 0;
+            }
+
+            // gravity
+            if (
+                square.y + square.size >= platform.y  //&&>
+             ) square.x + square.size > platform.x
+               square.width < platform.x + platform.width
+             {
+                square2.y = platform.y - square.size;
+                square2.velocity = 0;
+            }
+            draw();
+            requestAnimationFrame(update);
+        } -
+        update();
 
          // Listen for keyboard input
         window.addEventListener('keydown', function(event) {
@@ -83,7 +138,6 @@ const height = canvas.height = window.innerHeight;
             }
             event.preventDefault();
             draw();
-            drawSquare2();
         });
 
         draw();

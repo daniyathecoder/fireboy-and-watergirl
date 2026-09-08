@@ -4,11 +4,18 @@ const width = canvas.width = window.innerWidth;
 const height = canvas.height = window.innerHeight;
 
 
-  // Square properties
+  // watergirl
         let square = {
             x: 175,     // Initial X position (centered)
             y: 175,     // Initial Y position (centered)
             size: 50,   // Width and height of the square
+            speed: 5    // Pixels moved per event
+        };
+        // fireboy
+         let square2 = {
+            x: 300,     // Initial X (centered)
+            y: 300,     // Initial Y (centered)
+            size: 50,   // Width and height of square
             speed: 5    // Pixels moved per event
         };
 
@@ -21,6 +28,10 @@ const height = canvas.height = window.innerHeight;
             // 2. square
             ctx.fillStyle = 'royalblue';
             ctx.fillRect(square.x, square.y, square.size, square.size);
+
+             //draw fireboy
+            ctx.fillStyle = 'red';
+            ctx.fillRect(square2.x, square2.y, square2.size, square2.size);
         }
 
          // Listen for keyboard input
@@ -52,20 +63,7 @@ const height = canvas.height = window.innerHeight;
 
         draw();
 
-        let square2 = {
-            x: 300,     // Initial X (centered)
-            y: 300,     // Initial Y (centered)
-            size: 50,   // Width and height of square
-            speed: 5    // Pixels moved per event
-        };
-
-        //draw second square
-        function drawSquare2() {
-            ctx.fillStyle = 'red';
-            ctx.fillRect(square2.x, square2.y, square2.size, square2.size);
-        }
-
-        // Listen keyboard input 2nd square
+        // Listen keyboard input for fireboy
         window.addEventListener('keydown', function(event) {
             switch(event.key) {
                 case 'w':
@@ -89,5 +87,3 @@ const height = canvas.height = window.innerHeight;
         });
 
         draw();
-        drawSquare2();
-        

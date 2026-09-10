@@ -1,7 +1,8 @@
+alert("enjoy")
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 const width = canvas.width = window.innerWidth;
-const height = canvas.height = window.innerHeight;
+const height = canvas.height = window.innerHeight;                                           
 
 
   // watergirl
@@ -10,9 +11,10 @@ const height = canvas.height = window.innerHeight;
             y: 175,     // Initial Y position (centered)
             size: 50,   // Width and height of the square
             speed: 5,    // Pixels moved per event
-            velocity: 0, // Current vertical velocity
+            velocityY: 0, // Current vertical velocity
             jumpPower: -12,
             gravity: 0.5, // Gravity acceleration
+            onGround: false,
         };
         // fireboy
          let square2 = {
@@ -20,24 +22,38 @@ const height = canvas.height = window.innerHeight;
             y: 300,     // Initial Y (centered)
             size: 50,   // Width and height of square
             speed: 5,    // Pixels moved per event
-            velocity: 0, // Current vertical velocity
+            velocityY: 0, // Current vertical velocity
             jumpPower: -12,
             gravity: 0.5, // Gravity acceleration
+            onGround: false,
         };
 // platform
 let platform = {
-    x: 100,
-    y: 500,
-    width: 500,
-    height: 30,
+    x: 10,
+    y: 600,
+    width: 1300,
+    height: 20,
+}
+let platform2 = {
+    x: 10,
+    y: 400,
+    width: 1300,
+    height: 20,
+}
+let door = {
+    x: 1200,
+    y: 480,
+    width: 40,
+    height: 140
 }
         // Function to draw frame
         function draw() {
+            console.log('Drawing frame');
             // 1. Clear the entire canvas before drawing
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 2. square
+            // 2. watergirl
             ctx.fillStyle = 'royalblue';
             ctx.fillRect(square.x, square.y, square.size, square.size);
 
@@ -52,50 +68,69 @@ let platform = {
                 platform.width,
                 platform.height
             );
+            //draw platform2
+            ctx.fillStyle = 'pastelpink';
+            ctx.fillRect(platform2.x,
+                platform2.y,
+                platform2.width,
+                platform2.height
+            );
+            //draw door
+            ctx.fillStyle = 'green';
+            ctx.fillRect(door.x,
+                door.y,
+                door.width,
+                door.height,
+            )
         }
-        function update() {
-            //gravity for both
+       function update() {
+        console.log('Updating frame');
 
             // watergirl gravity
-            square.velocity += square.gravity;
-            square.y += square.velocity;
-             // fireboy gravity
-             square2.velocity += square2.gravity;
-            square2.y += square2.velocity;
+                square.velocityY += square.gravity;
+             square.y += square.velocityY;
+          //   fireboy gravity
+                  square2.velocityY += square2.gravity;
+               square2.y += square2.velocityY;
                      
-            //floor watergirl
-            if (square.y + square.size >= canvas.height) {
-                square.y = canvas.height - square.size;
-                square.velocity = 0;
-            }
 
-            //floor fireboy
-            if (square2.y + square2.size >= canvas.height) {
-                square2.y = canvas.height - square2.size;
-                square2.velocity = 0;
-            }
+            
+             //  gravity
+           if (
+              square.y + square.size >= platform.y  &&
+           square.x + square.size > platform.x &&
+          square.x < platform.x + platform.width &&
+            square.velocityY >=0 ) {
+                square.y = platform.y - square.size;
+               square.velocityY = 0;
+               square.onGround = true;
+    }
+         if ( 
+                square2.y + square2.size >= platform.y &&
+                square2.x + square2.size > platform.x &&
+              square2.x < platform.x + platform.width &&
+               square2.velocityY >= 0 
+           ) {
+                square2.y = platform.y - square2.size;
+               square2.velocityY = 0;
+            square2.onGround = true;
+    }
 
-            // gravity
-            if (
-                square.y + square.size >= platform.y  //&&>
-             ) square.x + square.size > platform.x
-               square.width < platform.x + platform.width
-             {
-                square2.y = platform.y - square.size;
-                square2.velocity = 0;
-            }
             draw();
             requestAnimationFrame(update);
-        } -
-        update();
+}
 
          // Listen for keyboard input
         window.addEventListener('keydown', function(event) {
             // Check which key was pressed use event.key
             switch(event.key) {
                 case 'ArrowUp':
-                    square.y -= square.speed;
+                    if (square.onGround) {
+                        square.velocityY = square.jumpPower;
+                        square.onGround = false;
+                    }
                     break;
+                
                 case 'ArrowDown':
                     square.y += square.speed;
                     break;
@@ -105,6 +140,7 @@ let platform = {
                 case 'ArrowRight':
                     square.x += square.speed;
                     break;
+
                 default:
                     return; // Quit function if it's not an arrow key
             }
@@ -116,28 +152,36 @@ let platform = {
             draw();
         });
 
-        draw();
 
         // Listen keyboard input for fireboy
         window.addEventListener('keydown', function(event) {
             switch(event.key) {
                 case 'w':
-                    square2.y -= square2.speed;
+                    if (square2.onGround) 
+                    {
+    square2.velocityY = square2.jumpPower;
+square2.onGround = false;  
+ }
                     break;
+
                 case 's':
                     square2.y += square2.speed;
                     break;
+
                 case 'a':
                     square2.x -= square2.speed;
                     break;
+
                 case 'd':
                     square2.x += square2.speed;
                     break;
+
                 default:
                     return;
             }
             event.preventDefault();
             draw();
         });
-
+    
         draw();
+        update();

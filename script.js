@@ -15,6 +15,7 @@ const height = canvas.height = window.innerHeight;
             jumpPower: -12,
             gravity: 0.5, // Gravity acceleration
             onGround: false,
+            onPlatform2: false,
         };
         // fireboy
          let square2 = {
@@ -26,6 +27,7 @@ const height = canvas.height = window.innerHeight;
             jumpPower: -12,
             gravity: 0.5, // Gravity acceleration
             onGround: false,
+            onPlatform2: false,
         };
 // platform
 let platform = {
@@ -35,16 +37,16 @@ let platform = {
     height: 20,
 }
 let platform2 = {
-    x: 10,
-    y: 400,
-    width: 1300,
+    x: 400,
+    y: 500,
+    width: 1000,
     height: 20,
 }
 let door = {
     x: 1200,
-    y: 480,
+    y: 520,
     width: 40,
-    height: 140
+    height: 80
 }
         // Function to draw frame
         function draw() {
@@ -114,11 +116,69 @@ let door = {
                 square2.y = platform.y - square2.size;
                square2.velocityY = 0;
             square2.onGround = true;
-    }
+           }
+//DOOR TELEPORT
+ function checkDoor() {
+  if (
+        square.x + square.size > door.x &&
+         square.x < door.x + door.width &&
+        square.y + square.size > door.y &&
+         square.y < door.y + door.height &&
+
+
+        square2.x + square2.size > door.x &&
+         square2.x < door.x + door.width &&
+        square2.y + square2.size > door.y &&
+         square2.y < door.y + door.height 
+  )
+                                                                                               
+ {
+        //move players
+        square.x = 400;
+        square.y = platform2.y - square.size ;
+
+        square2.x = 500;
+        square2.y = platform2.y - square2.size;
+
+        square.velocityY = 0;
+     square2.velocityY = 0;
+
+     square.onPlatform2 = true;
+     square2.onPlatform2 = true;
+ }
+
+}
+// platform 2 landing watergirl
+if (
+
+    square.onPlatform2 &&
+    square.y + square.size >= platform2.y &&
+    square.y < platform2.y &&
+    square.x + square.size > platform2.x &&
+    square.velocityY >= 0
+)       {
+    square.y = platform2.y - square.size;
+    square.velocityY = 0;
+    square.onGround = true;
+}
+//platform2 landing fireboy 
+if (
+    square2.onPlatform2 &&
+    square2.y + square2.size >= platform2.y &&
+    square2.y < platform2.y &&
+    square2.x + square2.size > platform2.x &&
+    square2.x < platform2.x + platform2.width &&
+    square2.velocityY >= 0
+) {
+    square2.y = platform2.y - square2.size;
+    square2.velocityY =0;
+    square2.onGround = true;
+}
+ checkDoor();
 
             draw();
             requestAnimationFrame(update);
-}
+       }
 
          // Listen for keyboard input
         window.addEventListener('keydown', function(event) {

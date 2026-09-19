@@ -55,7 +55,7 @@ let lava = {
     height: 40,
 }
 let button = {
- x: 790,
+ x: 840,
  y: 490,
  width: 19,
  height: 8,
@@ -104,14 +104,6 @@ let lavaOff = false;
                 door.width,
                 door.height,
             )
-          //draw lava on platform2
-            ctx.fillStyle = 'red';
-             ctx.fillRect(
-    lava.x,
-    lava.y,
-    lava.width,
-    lava.height
-);
 // button on platform2
  ctx.fillStyle = 'yellow';
 ctx.fillRect(button.x,
@@ -127,6 +119,7 @@ ctx.fillRect(
     platform3.width,
     platform3.height,
 )
+//lava
 if  (lavaOff) {
     ctx.fillStyle = 'blue';
 } else {
@@ -249,6 +242,7 @@ if (
 }
 
       if (
+        !lavaOff &&
     square.x + square.size > lava.x &&
     square.x < lava.x + lava.width &&
     square.y + square.size > lava.y &&
@@ -262,11 +256,20 @@ if (
     square2.x + square2.size > button.x &&
     square2.x < button.x + button.width &&
     square2.y + square2.size > button.y &&
-    square2.y > button.y + button.height
+    square2.y < button.y + button.height
 ) {
     lavaOff = true;
 }
-
+//fireboy touches water
+if (
+    lavaOff &&
+    square2.x + square2.size > lava.x &&
+    square2.x < lava.x + lava.width &&
+    square2.y + square2.size > lava.y &&
+    square2.y < lava.y + lava.height
+) {
+    restartLevel();
+}
 
  checkDoor();
 

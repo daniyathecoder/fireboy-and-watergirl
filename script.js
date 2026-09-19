@@ -37,9 +37,9 @@ let platform = {
     height: 20,
 }
 let platform2 = {
-    x: 400,
+    x: 0,
     y: 500,
-    width: 1000,
+    width: canvas.width,
     height: 20,
 }
 let door = {
@@ -48,6 +48,26 @@ let door = {
     width: 40,
     height: 80
 }
+let lava = {
+    x: 650,
+    y: 460,
+    width: 120,
+    height: 40,
+}
+let button = {
+ x: 790,
+ y: 490,
+ width: 19,
+ height: 8,
+}
+let platform3 = {
+    x: 0,
+    y: 380,
+    width: canvas.width,
+    height: 25,
+}
+let lavaOff = false;
+
         // Function to draw frame
         function draw() {
             console.log('Drawing frame');
@@ -84,7 +104,58 @@ let door = {
                 door.width,
                 door.height,
             )
+          //draw lava on platform2
+            ctx.fillStyle = 'red';
+             ctx.fillRect(
+    lava.x,
+    lava.y,
+    lava.width,
+    lava.height
+);
+// button on platform2
+ ctx.fillStyle = 'yellow';
+ctx.fillRect(button.x,
+    button.y,
+    button.width,
+    button.height,
+);
+//platform3
+ctx.fillStyle = 'gray';
+ctx.fillRect(
+    platform3.x,
+    platform3.y,
+    platform3.width,
+    platform3.height,
+)
+if  (lavaOff) {
+    ctx.fillStyle = 'blue';
+} else {
+    ctx.fillStyle = 'red';
+}
+ctx.fillRect(
+    lava.x,
+    lava.y,
+    lava.width,
+    lava.height
+);
         }
+        function restartLevel() {
+    // Reset Watergirl
+    square.x = 175;
+    square.y = 175;
+    square.velocityY = 0;
+    square.onGround = false;
+    square.onPlatform2 = false;
+
+    // Reset Fireboy
+    square2.x = 300;
+    square2.y = 300;
+    square2.velocityY = 0;
+    square2.onGround = false;
+    square2.onPlatform2 = false;
+
+    lavaOff = false;
+}
        function update() {
         console.log('Updating frame');
 
@@ -100,7 +171,9 @@ let door = {
              //  gravity
            if (
               square.y + square.size >= platform.y  &&
-           square.x + square.size > platform.x &&
+  
+
+              square.x + square.size > platform.x &&
           square.x < platform.x + platform.width &&
             square.velocityY >=0 ) {
                 square.y = platform.y - square.size;
@@ -150,11 +223,11 @@ let door = {
 }
 // platform 2 landing watergirl
 if (
-
     square.onPlatform2 &&
     square.y + square.size >= platform2.y &&
-    square.y < platform2.y &&
+    square.y < platform2.y + platform2.height &&
     square.x + square.size > platform2.x &&
+    square.x < platform2.x + platform2.width &&
     square.velocityY >= 0
 )       {
     square.y = platform2.y - square.size;
@@ -165,7 +238,7 @@ if (
 if (
     square2.onPlatform2 &&
     square2.y + square2.size >= platform2.y &&
-    square2.y < platform2.y &&
+    square2.y < platform2.y  + platform2.height &&
     square2.x + square2.size > platform2.x &&
     square2.x < platform2.x + platform2.width &&
     square2.velocityY >= 0
@@ -174,6 +247,27 @@ if (
     square2.velocityY =0;
     square2.onGround = true;
 }
+
+      if (
+    square.x + square.size > lava.x &&
+    square.x < lava.x + lava.width &&
+    square.y + square.size > lava.y &&
+    square.y < lava.y + lava.height
+) {
+    restartLevel();
+}
+//fireboy touching button 
+if (
+    square2.onPlatform2 &&
+    square2.x + square2.size > button.x &&
+    square2.x < button.x + button.width &&
+    square2.y + square2.size > button.y &&
+    square2.y > button.y + button.height
+) {
+    lavaOff = true;
+}
+
+
  checkDoor();
 
             draw();

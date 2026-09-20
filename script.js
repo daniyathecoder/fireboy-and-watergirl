@@ -68,6 +68,12 @@ let platform3 = {
 }
 let lavaOff = false;
 
+let ladder = {
+    x: canvas.width - 90,
+    y: 360,
+    width: 40,
+    height: 120,
+}
         // Function to draw frame
         function draw() {
             console.log('Drawing frame');
@@ -131,6 +137,14 @@ ctx.fillRect(
     lava.width,
     lava.height
 );
+//ladder
+ctx.fillStyle = 'brown';
+ctx.fillRect(
+    ladder.x,
+    ladder.y,
+    ladder.width,
+    ladder.height,
+)
         }
         function restartLevel() {
     // Reset Watergirl
@@ -152,37 +166,45 @@ ctx.fillRect(
        function update() {
         console.log('Updating frame');
 
-            // watergirl gravity
-                square.velocityY += square.gravity;
-             square.y += square.velocityY;
-          //   fireboy gravity
-                  square2.velocityY += square2.gravity;
-               square2.y += square2.velocityY;
-                     
-
+        
             
-             //  gravity
-           if (
-              square.y + square.size >= platform.y  &&
-  
+             //gravity
+             if (!isOnLadder(square)) {
+                square.velocityY += square.gravity;
+                square.y += square.velocityY;
+             }
+             else {
+                square.velocityY = 0;
+             }
+             if (!isOnLadder(square2)) {
+                square2.velocityY += square2.gravity;
+                square2.y += square2.velocityY;
+             } else {
+                square2.velocityY = 0;
+             }
+             //bottom platform collision - watergirl
+             if (
+                square.y + square.size >= platform.y &&
+                square.x + square.size > platform.x &&
+                square.x < platform.x + platform.width &&
+                square.velocityY >= 0
+             ) {
+                 square.y = platform.y - square.size;
+                 square.velocityY = 0;
+                 square.onGround = true;
+             }
 
-              square.x + square.size > platform.x &&
-          square.x < platform.x + platform.width &&
-            square.velocityY >=0 ) {
-                square.y = platform.y - square.size;
-               square.velocityY = 0;
-               square.onGround = true;
-    }
-         if ( 
+             // bottomplatform colision - fireboy
+             if (
                 square2.y + square2.size >= platform.y &&
                 square2.x + square2.size > platform.x &&
-              square2.x < platform.x + platform.width &&
-               square2.velocityY >= 0 
-           ) {
-                square2.y = platform.y - square2.size;
-               square2.velocityY = 0;
-            square2.onGround = true;
-           }
+                square2.x < platform.x + platform.width &&
+                square2.velocityY >= 0
+             ) {
+                square2.y = platform.y - square.size;
+                square2.velocityY = 0;
+                square2.onGround = true;
+             }
 //DOOR TELEPORT
  function checkDoor() {
   if (
@@ -240,7 +262,30 @@ if (
     square2.velocityY =0;
     square2.onGround = true;
 }
+//platform 3 
+if (
+    square.y + square.size >= platform3.y &&
+    square.y < platform3.y + platform3.height &&
+    square.x + square.size > platform3.x &&
+    square.x < platform3.x + platform3.width &&
+    square.velocityY >= 0
+) {
+    square.y = platform3.y - square.size;
+    square.velocityY = 0;
+    square.onGround = true;
+}
 
+if (square2.y + square2.size >= platform3.y &&
+    square2.y < platform3.y + platform3.height &&
+    square2.x + square2.size > platform3.x &&
+    square2.x < platform3.x + platform3.width &&
+    square2.velocityY >= 0
+) {
+    square2.y = platform3.y - square2.size;
+    square2.velocityY = 0;
+    square2.onGround = true;
+}
+//lava
       if (
         !lavaOff &&
     square.x + square.size > lava.x &&
@@ -276,20 +321,33 @@ if (
             draw();
             requestAnimationFrame(update);
        }
-
+function isOnLadder(player) {
+    return (
+        player.x + player.size > ladder.x &&
+        player.x < ladder.x + ladder.width &&
+        player.y + player.size > ladder.y &&
+        player.y < ladder.y + ladder.height
+    );
+}
          // Listen for keyboard input
-        window.addEventListener('keydown', function(event) {
+        window.addEventListener( 'keydown', function(event) {
             // Check which key was pressed use event.key
             switch(event.key) {
                 case 'ArrowUp':
-                    if (square.onGround) {
+            
+                    if (isOnLadder(square)) {
+                        square.y -= square.speed;
+                    }
+                        else if (square.onGround) {
                         square.velocityY = square.jumpPower;
-                        square.onGround = false;
+                        square.onGround = false;   
                     }
                     break;
-                
-                case 'ArrowDown':
-                    square.y += square.speed;
+            
+                case 'ArrowDown' :
+                    if (isOnLadder(square)) {
+                        square.y += square.speed;
+                    }
                     break;
                 case 'ArrowLeft':
                     square.x -= square.speed;
@@ -301,7 +359,7 @@ if (
                 default:
                     return; // Quit function if it's not an arrow key
             }
-
+        
              // Prevent browser from scrolling when pressing arrow keys
             event.preventDefault();
 
@@ -314,15 +372,19 @@ if (
         window.addEventListener('keydown', function(event) {
             switch(event.key) {
                 case 'w':
-                    if (square2.onGround) 
-                    {
+                    if (isOnLadder(square2)) {
+                        square2.y -= square2.speed;
+                    }
+                  else if (square2.onGround)  {
     square2.velocityY = square2.jumpPower;
 square2.onGround = false;  
  }
                     break;
 
                 case 's':
+                    if (isOnLadder(square2)) {
                     square2.y += square2.speed;
+                    }
                     break;
 
                 case 'a':

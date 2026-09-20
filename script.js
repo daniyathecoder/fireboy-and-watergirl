@@ -16,6 +16,7 @@ const height = canvas.height = window.innerHeight;
             gravity: 0.5, // Gravity acceleration
             onGround: false,
             onPlatform2: false,
+            onPlatform3: false,
         };
         // fireboy
          let square2 = {
@@ -28,6 +29,7 @@ const height = canvas.height = window.innerHeight;
             gravity: 0.5, // Gravity acceleration
             onGround: false,
             onPlatform2: false,
+            onPlatform3:false,
         };
 // platform
 let platform = {
@@ -263,20 +265,23 @@ if (
     square2.onGround = true;
 }
 //platform 3 
-if (
+if ( 
+    square.onPlatform3 &&
     square.y + square.size >= platform3.y &&
-    square.y < platform3.y + platform3.height &&
+    square.y + square.size  - square.velocityY <= platform3.y &&
     square.x + square.size > platform3.x &&
     square.x < platform3.x + platform3.width &&
-    square.velocityY >= 0
-) {
+    square.velocityY >= 0)
+    {
     square.y = platform3.y - square.size;
     square.velocityY = 0;
     square.onGround = true;
 }
 
-if (square2.y + square2.size >= platform3.y &&
-    square2.y < platform3.y + platform3.height &&
+if (
+    square2.onPlatform3 &&
+    square2.y + square2.size >= platform3.y &&
+    square2.y + square2.size - square2.velocityY  <=  platform3.y &&
     square2.x + square2.size > platform3.x &&
     square2.x < platform3.x + platform3.width &&
     square2.velocityY >= 0
@@ -337,7 +342,12 @@ function isOnLadder(player) {
             
                     if (isOnLadder(square)) {
                         square.y -= square.speed;
-                    }
+                        if ( square.y <= platform3.y - square.size) {
+                            square.y = platform3.y - square.size;
+                            square.onPlatform3 = true;
+                            square.onGround = true;
+                   }
+                        }
                         else if (square.onGround) {
                         square.velocityY = square.jumpPower;
                         square.onGround = false;   
@@ -374,6 +384,12 @@ function isOnLadder(player) {
                 case 'w':
                     if (isOnLadder(square2)) {
                         square2.y -= square2.speed;
+
+                        if (square2.y <= platform3.y - square2.size) {
+                            square2.y = platform3.y - square2.size;
+                            square2.onPlatform3 = true;
+                            square2.onGround = true;
+                        }
                     }
                   else if (square2.onGround)  {
     square2.velocityY = square2.jumpPower;
